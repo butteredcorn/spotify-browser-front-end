@@ -1,12 +1,10 @@
 import React, { FC, useState } from "react";
 import Head from "next/head";
 import { Container } from "@mui/material";
-import { SearchBar } from "@/components";
-import withAuth from "@/auth/withAuth";
+import { LoginButton } from "@/components";
 import styled from "@emotion/styled";
 
-const Dashboard: FC = () => {
-  const [query, setQuery] = useState("");
+const Login: FC = () => {
   return (
     <>
       <Head>
@@ -17,16 +15,14 @@ const Dashboard: FC = () => {
           <h1>Spotify Browser</h1>
         </Header>
         <Container maxWidth="xl">
-          <SearchBar query={query} setQuery={setQuery} />
+          <LoginButton />
         </Container>
       </Main>
     </>
   );
 };
 
-export default withAuth(Dashboard);
-
-const Wrapper = styled.div``;
+export default Login;
 
 const Header = styled.div`
   display: flex;

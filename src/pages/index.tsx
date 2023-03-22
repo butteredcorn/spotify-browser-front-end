@@ -1,6 +1,7 @@
-import { CssBaseline } from "@mui/material";
 import React, { FC } from "react";
+import { CssBaseline } from "@mui/material";
 import Dashboard from "./Dashboard";
+import withAuth from "@/auth/withAuth";
 
 const Home: FC = () => {
   return (
@@ -11,4 +12,4 @@ const Home: FC = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);

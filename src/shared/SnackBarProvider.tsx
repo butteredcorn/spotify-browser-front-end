@@ -1,4 +1,4 @@
-import { Snackbar } from "@/components/Snackbar";
+import { Snackbar } from "@/components";
 import React, {
   createContext,
   FC,

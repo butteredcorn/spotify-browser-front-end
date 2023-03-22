@@ -6,7 +6,7 @@ import { createQueryString } from "@/shared/utils";
 
 const baseUrl = "https://accounts.spotify.com/authorize";
 
-export const Login: FC = () => {
+export const LoginButton: FC = () => {
   const router = useRouter();
   const [spotiyCode, setSpotifyCode] = useState("");
   useAuth(spotiyCode);
@@ -38,7 +38,9 @@ export const Login: FC = () => {
 
   return (
     <>
-      <Button href={url}>Login</Button>
+      <Button variant="contained" href={url}>
+        Login
+      </Button>
     </>
   );
 };
