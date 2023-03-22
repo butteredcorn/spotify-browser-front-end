@@ -34,7 +34,7 @@ export const LoginButton: FC = () => {
     const code = router.query["code"];
     if (code && typeof code !== "string") throw new Error("Unexpected code.");
     if (code) setSpotifyCode(code);
-  }, [router]);
+  }, [router.query]);
 
   return (
     <>

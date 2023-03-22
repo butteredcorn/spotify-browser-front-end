@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
-import { routes, useErrorSnackBar, usePush } from "@/shared";
+import { routes, useErrorSnackBar, useRouter } from "@/shared";
 import { useAuthContext } from "./AuthProvider";
 
 interface LoginResponse {
@@ -11,7 +11,7 @@ interface LoginResponse {
 
 export const useAuth = (code: string) => {
   const createSnackBarError = useErrorSnackBar();
-  const push = usePush();
+  const { push } = useRouter();
   const {
     accessToken,
     setAccessToken,
@@ -25,7 +25,7 @@ export const useAuth = (code: string) => {
     async function getAccessToken(code: string) {
       try {
         const response: AxiosResponse<LoginResponse> = await axios.post(
-          `${process.env.NEXT_PUBLIC_WEBSERVER_BASE_URL}${routes.login}`,
+          `${process.env.NEXT_PUBLIC_WEBSERVER_BASE_URL}/login`,
           { code }
         );
         push(routes.index);
@@ -68,7 +68,7 @@ export const useAuth = (code: string) => {
     if (refreshToken && tokenExpiry) {
       const interval = setInterval(() => {
         getRefreshToken(refreshToken);
-      }, tokenExpiry - 6000);
+      }, Math.max(tokenExpiry - 6000, 600000));
       return () => clearInterval(interval);
     }
   }, [

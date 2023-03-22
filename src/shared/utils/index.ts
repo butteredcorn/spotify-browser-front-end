@@ -1,2 +1,2 @@
 export * from "./createQueryString";
-export * from "./usePush";
+export * from "./useRouter";

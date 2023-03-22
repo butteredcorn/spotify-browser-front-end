@@ -1,15 +1,15 @@
-import { FC, PropsWithChildren, useEffect } from "react";
-import { usePush } from "@/shared/utils";
+import { FC, useEffect } from "react";
+import { routes, useRouter } from "@/shared";
 import { useAuthContext } from "./AuthProvider";
 
 const withAuth = (Component: FC) => {
   const Authenticated: FC = (): JSX.Element | null => {
-    const push = usePush();
+    const { push, getPath } = useRouter();
     const { accessToken } = useAuthContext();
 
     useEffect(() => {
-      if (!accessToken) push("/Login");
-    }, [accessToken, push]);
+      if (!accessToken && getPath() !== routes.login) push(routes.login);
+    }, [accessToken, push, getPath]);
 
     return accessToken ? <Component /> : null;
   };

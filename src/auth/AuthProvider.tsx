@@ -1,10 +1,10 @@
+import { gqlRequestClient } from "@/graphql";
 import React, {
   createContext,
-  Dispatch,
   FC,
   PropsWithChildren,
-  SetStateAction,
   useContext,
+  useEffect,
   useMemo,
   useState
 } from "react";
@@ -12,20 +12,20 @@ import React, {
 export interface AuthProviderProps extends PropsWithChildren {}
 
 export interface AuthContextProps {
-  accessToken: string;
-  setAccessToken: Dispatch<SetStateAction<string>>;
-  refreshToken: string;
-  setRefreshToken: Dispatch<SetStateAction<string>>;
-  tokenExpiry: number;
-  setTokenExpiry: Dispatch<SetStateAction<number>>;
+  accessToken: string | null;
+  setAccessToken: (token: string) => void;
+  refreshToken: string | null;
+  setRefreshToken: (token: string) => void;
+  tokenExpiry: number | null;
+  setTokenExpiry: (expiry: number) => void;
 }
 
 const AuthContext = createContext<AuthContextProps>(null!);
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
-  const [tokenExpiry, setTokenExpiry] = useState(0);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [tokenExpiry, setTokenExpiry] = useState<number | null>(null);
 
   const value = useMemo(
     () => ({
@@ -38,6 +38,12 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     }),
     [accessToken, refreshToken, tokenExpiry]
   );
+
+  useEffect(() => {
+    if (gqlRequestClient && accessToken) {
+      gqlRequestClient.setHeader("authentication", accessToken);
+    }
+  }, [accessToken]);
 
   return (
     <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
