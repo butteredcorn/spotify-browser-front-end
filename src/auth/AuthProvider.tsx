@@ -40,7 +40,9 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   );
 
   useEffect(() => {
+    console.log("auth provider effect running");
     if (gqlRequestClient && accessToken) {
+      console.log("attaching the authentication header");
       gqlRequestClient.setHeader("authentication", accessToken);
     }
   }, [accessToken]);

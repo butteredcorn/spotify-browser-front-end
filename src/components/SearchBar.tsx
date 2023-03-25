@@ -5,9 +5,10 @@ import SearchIcon from "@mui/icons-material/Search";
 interface SearchBarProps {
   query: string;
   setQuery: (query: string) => void;
+  onClick: () => void;
 }
 
-export const SearchBar: FC<SearchBarProps> = ({ query, setQuery }) => (
+export const SearchBar: FC<SearchBarProps> = ({ query, setQuery, onClick }) => (
   <>
     <TextField
       id="search-bar"
@@ -23,8 +24,12 @@ export const SearchBar: FC<SearchBarProps> = ({ query, setQuery }) => (
       sx={{
         width: "calc(100% - 40px)"
       }}
+      onKeyDown={(e) => {
+        // deprecated but not all browsers support code
+        if (e.code === "13" || e.keyCode === 13) onClick();
+      }}
     />
-    <IconButton type="submit" aria-label="search">
+    <IconButton type="submit" aria-label="search" onClick={onClick}>
       <SearchIcon style={{ fill: "blue" }} />
     </IconButton>
   </>

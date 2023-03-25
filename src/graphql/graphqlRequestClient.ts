@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 
 export const gqlRequestClient = new GraphQLClient(
-  process.env.REACT_APP_GQL_URI!,
+  `${process.env.NEXT_PUBLIC_WEBSERVER_BASE_URL}/graphql`,
   {
     headers: {}
   }
