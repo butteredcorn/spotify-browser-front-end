@@ -30,6 +30,7 @@ export const useAuth = (code: string) => {
           `${process.env.NEXT_PUBLIC_WEBSERVER_BASE_URL}/login`,
           { code }
         );
+        console.log(response.data);
         push(routes.index);
         setAccessToken(response.data.accessToken);
         setRefreshToken(response.data.refreshToken);

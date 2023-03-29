@@ -31,6 +31,10 @@ const Dashboard: FC = () => {
       );
   }, [isPremium, createSnackBarError]);
 
+  useEffect(() => {
+    console.log("current track is " + currentTrack?.name);
+  }, [currentTrack]);
+
   return (
     <>
       <Head>
@@ -48,7 +52,7 @@ const Dashboard: FC = () => {
               onClick={searchTracks}
             />
           </SearchBarContainer>
-          <TracksGrid tracks={tracks ?? []} />
+          <TracksGrid tracks={tracks ?? []} onSelectTrack={setCurrentTrack} />
           {isPremium && <TrackPlayer trackUri={currentTrack?.uri} />}
         </Container>
       </Main>

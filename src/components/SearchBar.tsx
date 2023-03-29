@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC, useState } from "react";
 import { IconButton, TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import MuiSearchIcon from "@mui/icons-material/Search";
+import styled from "@emotion/styled";
 
 interface SearchBarProps {
   query: string;
@@ -36,3 +37,7 @@ export const SearchBar: FC<SearchBarProps> = ({ query, setQuery, onClick }) => (
     </IconButton>
   </>
 );
+
+const SearchIcon = styled(MuiSearchIcon)`
+  fill: blue;
+`;

@@ -2,21 +2,24 @@ import React, { FC, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { isEmpty, sample } from "lodash";
 import {
+  Box,
   Card as MuiCard,
   CardContent as MuiCardContent,
   CardMedia,
   Typography
 } from "@mui/material";
+import MuiPlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { Track, Image } from "@/models";
 import styled from "@emotion/styled";
 
 interface TrackCardProps {
   track: Track;
+  onClick: (track: Track) => void;
 }
 
 const fourColumns = 3; // grid has 12 columns, this prop describes the number of columns each grid item takes
 
-export const TrackCard: FC<TrackCardProps> = ({ track }) => {
+export const TrackCard: FC<TrackCardProps> = ({ track, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const image = getSampleImage(track.images);
   return (
@@ -25,9 +28,17 @@ export const TrackCard: FC<TrackCardProps> = ({ track }) => {
         raised={isHovered}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => onClick(track)}
       >
         <CardContent>
-          <CardMedia component="img" image={image.url} alt={track.name} />
+          <ImageContainer>
+            <CardMedia component="img" image={image.url} alt={track.name} />
+            {isHovered && (
+              <PlayIconContainer>
+                <PlayIcon fontSize="inherit" />
+              </PlayIconContainer>
+            )}
+          </ImageContainer>
           <Typography variant="subtitle1" color="text.primary">
             {track.name}
           </Typography>
@@ -57,3 +68,23 @@ function getSampleImage(images: Image[], minImageDimension = 100) {
 const Card = styled(MuiCard)``;
 
 const CardContent = styled(MuiCardContent)``;
+
+const ImageContainer = styled(Box)`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const PlayIconContainer = styled(Box)`
+  position: absolute;
+  top: calc(50% - 40px);
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 80px;
+  z-index: 1;
+`;
+
+const PlayIcon = styled(MuiPlayIcon)`
+  fill: white;
+  opacity: 80%;
+`;
