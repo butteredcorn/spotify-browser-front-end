@@ -2,12 +2,8 @@ import { GraphQLResponse, GraphQLError } from "graphql-request/build/esm/types";
 import { gql } from "graphql-request";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-import { gqlRequestClient } from "../../graphql";
-
-interface Track {
-  id: string;
-  name: string;
-}
+import { gqlRequestClient } from "@/graphql";
+import { Track } from "@/models";
 
 export type GetTracksResponse = {
   getTracks: Track[];

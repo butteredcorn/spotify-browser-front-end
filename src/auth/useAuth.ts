@@ -7,6 +7,7 @@ interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiry: number;
+  isPremium: boolean;
 }
 
 export const useAuth = (code: string) => {
@@ -18,7 +19,8 @@ export const useAuth = (code: string) => {
     refreshToken,
     setRefreshToken,
     tokenExpiry,
-    setTokenExpiry
+    setTokenExpiry,
+    setIsPremium
   } = useAuthContext();
 
   useEffect(() => {
@@ -32,6 +34,7 @@ export const useAuth = (code: string) => {
         setAccessToken(response.data.accessToken);
         setRefreshToken(response.data.refreshToken);
         setTokenExpiry(response.data.expiry);
+        setIsPremium(response.data.isPremium);
       } catch (error: any) {
         push(routes.login);
         createSnackBarError(error?.message);
@@ -45,7 +48,8 @@ export const useAuth = (code: string) => {
     push,
     setAccessToken,
     setRefreshToken,
-    setTokenExpiry
+    setTokenExpiry,
+    setIsPremium
   ]);
 
   // refresh spotify token as needed, access tokens last one hour for spotify

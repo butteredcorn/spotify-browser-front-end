@@ -8,6 +8,8 @@ interface SearchBarProps {
   onClick: () => void;
 }
 
+export const searchIconWidth = 40;
+
 export const SearchBar: FC<SearchBarProps> = ({ query, setQuery, onClick }) => (
   <>
     <TextField
@@ -15,14 +17,14 @@ export const SearchBar: FC<SearchBarProps> = ({ query, setQuery, onClick }) => (
       className="text"
       value={query}
       onChange={(e: ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
+        setQuery(String(e.target.value).trim());
       }}
       label="Enter a search query"
       variant="outlined"
       placeholder="Search..."
       size="small"
       sx={{
-        width: "calc(100% - 40px)"
+        width: `calc(100% - ${searchIconWidth}px)`
       }}
       onKeyDown={(e) => {
         // deprecated but not all browsers support code

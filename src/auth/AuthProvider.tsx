@@ -18,6 +18,8 @@ export interface AuthContextProps {
   setRefreshToken: (token: string) => void;
   tokenExpiry: number | null;
   setTokenExpiry: (expiry: number) => void;
+  isPremium: boolean;
+  setIsPremium: (isPremium: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextProps>(null!);
@@ -26,6 +28,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [tokenExpiry, setTokenExpiry] = useState<number | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
 
   const value = useMemo(
     () => ({
@@ -34,15 +37,15 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       refreshToken,
       setRefreshToken,
       tokenExpiry,
-      setTokenExpiry
+      setTokenExpiry,
+      isPremium,
+      setIsPremium
     }),
-    [accessToken, refreshToken, tokenExpiry]
+    [accessToken, refreshToken, tokenExpiry, isPremium, setIsPremium]
   );
 
   useEffect(() => {
-    console.log("auth provider effect running");
     if (gqlRequestClient && accessToken) {
-      console.log("attaching the authentication header");
       gqlRequestClient.setHeader("authentication", accessToken);
     }
   }, [accessToken]);

@@ -1,25 +1,35 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import { Container } from "@mui/material";
-import { isEmpty } from "lodash";
+import { Container, Typography } from "@mui/material";
 import { SearchBar } from "@/components";
+import { isEmpty } from "lodash";
 import withAuth from "@/auth/withAuth";
 import styled from "@emotion/styled";
 import { useGetTracks } from "@/api";
+import { TracksGrid } from "@/components/TracksGrid";
+import { Track } from "@/models";
+import { TrackPlayer } from "@/components/TrackPlayer";
+import { useAuthContext } from "@/auth";
+import { useErrorSnackBar } from "@/shared";
 
 const Dashboard: FC = () => {
+  const { isPremium } = useAuthContext();
+  const createSnackBarError = useErrorSnackBar();
   const [query, setQuery] = useState("");
-  const [getTracks, getTrackQuery] = useGetTracks(query, { enabled: false });
+  const [tracks, getTrackQuery] = useGetTracks(query, { enabled: false });
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 
   const searchTracks = useCallback(async () => {
     if (isEmpty(query)) return; // todo: give some indication to add query
-    const response = await getTrackQuery.refetch();
-    console.log(response);
+    await getTrackQuery.refetch();
   }, [getTrackQuery, query]);
 
   useEffect(() => {
-    console.log(getTracks);
-  }, [getTracks]);
+    if (!isPremium)
+      createSnackBarError(
+        "The web player is only available for premium spotify users, and has been disabled."
+      );
+  }, [isPremium, createSnackBarError]);
 
   return (
     <>
@@ -27,11 +37,19 @@ const Dashboard: FC = () => {
         <title>Spotify Browser</title>
       </Head>
       <Main>
-        <Header>
-          <h1>Spotify Browser</h1>
-        </Header>
         <Container maxWidth="xl">
-          <SearchBar query={query} setQuery={setQuery} onClick={searchTracks} />
+          <Header>
+            <Typography variant="h2">Spotify Browser</Typography>
+          </Header>
+          <SearchBarContainer>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+              onClick={searchTracks}
+            />
+          </SearchBarContainer>
+          <TracksGrid tracks={tracks ?? []} />
+          {isPremium && <TrackPlayer trackUri={currentTrack?.uri} />}
         </Container>
       </Main>
     </>
@@ -40,12 +58,13 @@ const Dashboard: FC = () => {
 
 export default withAuth(Dashboard);
 
-const Wrapper = styled.div``;
+const SearchBarContainer = styled.div`
+  margin-bottom: 1rem;
+`;
 
 const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 300px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const Main = styled.main`
