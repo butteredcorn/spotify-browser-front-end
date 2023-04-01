@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { Container, Typography } from "@mui/material";
-import { SearchBar } from "@/components";
+import { SearchBar, searchIconWidth } from "@/components";
 import { isEmpty } from "lodash";
 import withAuth from "@/auth/withAuth";
 import styled from "@emotion/styled";
@@ -31,10 +31,6 @@ const Dashboard: FC = () => {
       );
   }, [isPremium, createSnackBarError]);
 
-  useEffect(() => {
-    console.log("current track is " + currentTrack?.name);
-  }, [currentTrack]);
-
   return (
     <>
       <Head>
@@ -44,17 +40,27 @@ const Dashboard: FC = () => {
         <Container maxWidth="xl">
           <Header>
             <Typography variant="h2">Spotify Browser</Typography>
+            <SearchBarContainer>
+              <SearchBar
+                query={query}
+                setQuery={setQuery}
+                onClick={searchTracks}
+              />
+            </SearchBarContainer>
           </Header>
-          <SearchBarContainer>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}
-              onClick={searchTracks}
+          <TrackGridContainer>
+            <TracksGrid
+              currentTrack={currentTrack}
+              tracks={tracks ?? []}
+              onSelectTrack={setCurrentTrack}
             />
-          </SearchBarContainer>
-          <TracksGrid tracks={tracks ?? []} onSelectTrack={setCurrentTrack} />
-          {isPremium && <TrackPlayer trackUri={currentTrack?.uri} />}
+          </TrackGridContainer>
         </Container>
+        {isPremium && (
+          <Footer>
+            <TrackPlayer trackUri={currentTrack?.uri} />
+          </Footer>
+        )}
       </Main>
     </>
   );
@@ -73,4 +79,16 @@ const Header = styled.div`
 
 const Main = styled.main`
   height: 100vh;
+`;
+
+const TrackGridContainer = styled.div`
+  padding-right: ${searchIconWidth}px;
+`;
+
+const Footer = styled.footer`
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
 `;

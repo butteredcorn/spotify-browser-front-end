@@ -1,6 +1,8 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { isEmpty, sample } from "lodash";
+import styled from "@emotion/styled";
+import { motion } from "framer-motion";
 import {
   Box,
   Card as MuiCard,
@@ -10,45 +12,108 @@ import {
 } from "@mui/material";
 import MuiPlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { Track, Image } from "@/models";
-import styled from "@emotion/styled";
+import { useAuthContext } from "@/auth";
+import { css } from "@emotion/css";
 
 interface TrackCardProps {
   track: Track;
+  lyrics?: string;
+  isPlaying: boolean;
   onClick: (track: Track) => void;
 }
 
 const fourColumns = 3; // grid has 12 columns, this prop describes the number of columns each grid item takes
 
-export const TrackCard: FC<TrackCardProps> = ({ track, onClick }) => {
+export const TrackCard: FC<TrackCardProps> = ({
+  track,
+  lyrics,
+  isPlaying,
+  onClick
+}) => {
+  const { isPremium } = useAuthContext();
+  const frontRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [cardContentHeight, setCardContentHeight] = useState(0);
   const image = getSampleImage(track.images);
+
+  const Front = useMemo(() => {
+    return (
+      <div ref={frontRef}>
+        <ImageContainer>
+          <CardMedia component="img" image={image.url} alt={track.name} />
+          {isPremium && (
+            <PlayIconContainer>
+              <motion.div
+                animate={!isHovered ? "start" : "end"}
+                variants={{
+                  start: { opacity: 0 },
+                  end: {
+                    opacity: 0.8,
+                    transition: {
+                      delay: 0.1
+                    }
+                  }
+                }}
+              >
+                <PlayIcon fontSize="inherit" />
+              </motion.div>
+            </PlayIconContainer>
+          )}
+        </ImageContainer>
+        <Typography variant="subtitle1" color="text.primary">
+          {track.name}
+        </Typography>
+        {!isEmpty(track.artists) && (
+          <Typography variant="subtitle2" color="text.secondary">
+            {(track.artists ?? []).map((a) => a.name).join(", ")}
+          </Typography>
+        )}
+      </div>
+    );
+  }, [image, track, isHovered, isPremium]);
+
+  const Back = useMemo(() => {
+    console.log(lyrics);
+    return (
+      <div
+        className={css`
+          height: ${cardContentHeight}px;
+          transform: rotateY(180deg);
+        `}
+      >
+        <Typography paragraph>lyrics go here</Typography>
+      </div>
+    );
+  }, [lyrics, cardContentHeight]);
+
+  useEffect(() => {
+    if (Front && frontRef.current)
+      setCardContentHeight(frontRef.current.clientHeight);
+  }, [Front]);
+
   return (
     <Grid xs={fourColumns}>
-      <Card
-        raised={isHovered}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => onClick(track)}
+      <motion.div
+        animate={!isPlaying ? "front" : "back"}
+        variants={{
+          front: { rotateY: 0 },
+          back: {
+            rotateY: 180,
+            transition: {
+              duration: 2
+            }
+          }
+        }}
       >
-        <CardContent>
-          <ImageContainer>
-            <CardMedia component="img" image={image.url} alt={track.name} />
-            {isHovered && (
-              <PlayIconContainer>
-                <PlayIcon fontSize="inherit" />
-              </PlayIconContainer>
-            )}
-          </ImageContainer>
-          <Typography variant="subtitle1" color="text.primary">
-            {track.name}
-          </Typography>
-          {!isEmpty(track.artists) && (
-            <Typography variant="subtitle2" color="text.secondary">
-              {(track.artists ?? []).map((a) => a.name).join(", ")}
-            </Typography>
-          )}
-        </CardContent>
-      </Card>
+        <Card
+          raised={isHovered}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={() => onClick(track)}
+        >
+          <CardContent>{!isPlaying ? Front : Back}</CardContent>
+        </Card>
+      </motion.div>
     </Grid>
   );
 };
@@ -65,7 +130,9 @@ function getSampleImage(images: Image[], minImageDimension = 100) {
   return image;
 }
 
-const Card = styled(MuiCard)``;
+const Card = styled(MuiCard)`
+  cursor: pointer;
+`;
 
 const CardContent = styled(MuiCardContent)``;
 
@@ -86,5 +153,4 @@ const PlayIconContainer = styled(Box)`
 
 const PlayIcon = styled(MuiPlayIcon)`
   fill: white;
-  opacity: 80%;
 `;

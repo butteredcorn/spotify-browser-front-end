@@ -27,7 +27,7 @@ export const LoginButton: FC = () => {
         "user-modify-playback-state"
       ]
     },
-    { arrayFormat: "bracket-separator", arrayFormatSeparator: " " }
+    { arrayFormat: "separator", arrayFormatSeparator: " " }
   );
 
   useEffect(() => {
