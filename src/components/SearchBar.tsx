@@ -18,7 +18,7 @@ export const SearchBar: FC<SearchBarProps> = ({ query, setQuery, onClick }) => (
       className="text"
       value={query}
       onChange={(e: ChangeEvent<HTMLInputElement>) => {
-        setQuery(String(e.target.value).trim());
+        setQuery(e.target.value);
       }}
       label="Enter a search query"
       variant="outlined"

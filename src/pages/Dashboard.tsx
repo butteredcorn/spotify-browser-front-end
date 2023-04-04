@@ -16,7 +16,9 @@ const Dashboard: FC = () => {
   const { isPremium } = useAuthContext();
   const createSnackBarError = useErrorSnackBar();
   const [query, setQuery] = useState("");
-  const [tracks, getTrackQuery] = useGetTracks(query, { enabled: false });
+  const [tracks, getTrackQuery] = useGetTracks(String(query).trim(), {
+    enabled: false
+  });
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 
   const searchTracks = useCallback(async () => {

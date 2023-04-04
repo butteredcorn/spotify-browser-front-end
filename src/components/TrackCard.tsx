@@ -14,10 +14,12 @@ import MuiPlayIcon from "@mui/icons-material/PlayCircleOutline";
 import { Track, Image } from "@/models";
 import { useAuthContext } from "@/auth";
 import { css } from "@emotion/css";
+import { Loader } from "./Loader";
 
 interface TrackCardProps {
   track: Track;
   lyrics?: string;
+  lyricsIsLoading?: boolean;
   isPlaying: boolean;
   onClick: (track: Track) => void;
 }
@@ -27,6 +29,7 @@ const fourColumns = 3; // grid has 12 columns, this prop describes the number of
 export const TrackCard: FC<TrackCardProps> = ({
   track,
   lyrics,
+  lyricsIsLoading,
   isPlaying,
   onClick
 }) => {
@@ -73,7 +76,8 @@ export const TrackCard: FC<TrackCardProps> = ({
   }, [image, track, isHovered, isPremium]);
 
   const Back = useMemo(() => {
-    console.log(lyrics);
+    const sections = (lyrics ?? "").split("\n\n");
+
     return (
       <div
         className={css`
@@ -81,10 +85,29 @@ export const TrackCard: FC<TrackCardProps> = ({
           transform: rotateY(180deg);
         `}
       >
-        <Typography paragraph>lyrics go here</Typography>
+        {lyricsIsLoading ? (
+          <Loader />
+        ) : (
+          <Scrollable>
+            {sections.map((s, si) => {
+              const phrases = s.split("\n").map((p, pi) => (
+                <Typography
+                  key={pi}
+                  paragraph
+                  variant="body2"
+                  color="text.secondary"
+                  marginBottom={0}
+                >
+                  {p}
+                </Typography>
+              ));
+              return <Section key={si}>{phrases}</Section>;
+            })}
+          </Scrollable>
+        )}
       </div>
     );
-  }, [lyrics, cardContentHeight]);
+  }, [lyrics, cardContentHeight, lyricsIsLoading]);
 
   useEffect(() => {
     if (Front && frontRef.current)
@@ -153,4 +176,13 @@ const PlayIconContainer = styled(Box)`
 
 const PlayIcon = styled(MuiPlayIcon)`
   fill: white;
+`;
+
+const Scrollable = styled(Box)`
+  height: 100%;
+  overflow-y: auto;
+`;
+
+const Section = styled.div`
+  margin-bottom: 1rem;
 `;
