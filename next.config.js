@@ -7,13 +7,13 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // matching all API routes
-        source: "/api/:path*",
+        // matching all routes
+        source: "/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://justin-yee-spotify-browser-front-end.netlify.app"
+            value: "*"
           },
           {
             key: "Access-Control-Allow-Methods",
