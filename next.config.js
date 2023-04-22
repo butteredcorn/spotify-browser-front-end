@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         // matching all routes
-        source: "/*",
+        source: "/",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           {
