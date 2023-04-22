@@ -2,7 +2,13 @@
   "headers": [
     {
       "source": "/(.*)",
-      "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+      "routes": [
+        {
+          "src": "/(.*)",
+          "dest": "src/pages/_app.tsx",
+          "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        }
+      ],
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
