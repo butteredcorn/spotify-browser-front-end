@@ -39,7 +39,7 @@ export const LoginButton: FC = () => {
   return (
     <>
       <Button variant="contained" href={url}>
-        Login
+        Login with Spotify
       </Button>
     </>
   );
