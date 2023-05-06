@@ -8,6 +8,7 @@ interface LoginResponse {
   refreshToken: string;
   expiry: number;
   isPremium: boolean;
+  jwtToken: string;
 }
 
 export const useAuth = (code: string) => {
@@ -20,7 +21,8 @@ export const useAuth = (code: string) => {
     setRefreshToken,
     tokenExpiry,
     setTokenExpiry,
-    setIsPremium
+    setIsPremium,
+    setJwtToken
   } = useAuthContext();
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export const useAuth = (code: string) => {
         setRefreshToken(response.data.refreshToken);
         setTokenExpiry(response.data.expiry);
         setIsPremium(response.data.isPremium);
+        setJwtToken(response.data.jwtToken);
       } catch (error: any) {
         push(routes.login);
         createSnackBarError(error?.message);
@@ -49,7 +52,8 @@ export const useAuth = (code: string) => {
     setAccessToken,
     setRefreshToken,
     setTokenExpiry,
-    setIsPremium
+    setIsPremium,
+    setJwtToken
   ]);
 
   // refresh spotify token as needed, access tokens last one hour for spotify
@@ -63,6 +67,7 @@ export const useAuth = (code: string) => {
         setAccessToken(response.data.accessToken);
         setRefreshToken(response.data.refreshToken);
         setTokenExpiry(response.data.expiry);
+        setJwtToken(response.data.jwtToken);
       } catch (error: any) {
         push(routes.login);
         createSnackBarError(error?.message);
@@ -82,7 +87,8 @@ export const useAuth = (code: string) => {
     push,
     setAccessToken,
     setRefreshToken,
-    setTokenExpiry
+    setTokenExpiry,
+    setJwtToken
   ]);
 
   return accessToken;

@@ -20,6 +20,8 @@ export interface AuthContextProps {
   setTokenExpiry: (expiry: number) => void;
   isPremium: boolean;
   setIsPremium: (isPremium: boolean) => void;
+  jwtToken: string | null;
+  setJwtToken: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextProps>(null!);
@@ -29,6 +31,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [tokenExpiry, setTokenExpiry] = useState<number | null>(null);
   const [isPremium, setIsPremium] = useState(false);
+  const [jwtToken, setJwtToken] = useState<string | null>(null);
 
   const value = useMemo(
     () => ({
@@ -39,16 +42,26 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       tokenExpiry,
       setTokenExpiry,
       isPremium,
-      setIsPremium
+      setIsPremium,
+      jwtToken,
+      setJwtToken
     }),
-    [accessToken, refreshToken, tokenExpiry, isPremium, setIsPremium]
+    [
+      accessToken,
+      refreshToken,
+      tokenExpiry,
+      isPremium,
+      setIsPremium,
+      jwtToken,
+      setJwtToken
+    ]
   );
 
   useEffect(() => {
-    if (gqlRequestClient && accessToken) {
-      gqlRequestClient.setHeader("authentication", accessToken);
+    if (gqlRequestClient && jwtToken) {
+      gqlRequestClient.setHeader("authorization", `Bearer ${jwtToken}`);
     }
-  }, [accessToken]);
+  }, [jwtToken]);
 
   return (
     <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
